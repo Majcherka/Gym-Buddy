@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e0dede;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Nawigacja */
+.navigation_bar {
+    background-color: #FAFAFA;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2vh 5vw;
+    height: 10vh;
+    width: 100%;
+}
+
+.logo_chat {
+    display: block;
+}
+
+.navigation_bar img {
+    width: 8vw;
+    max-width: 60px;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.icons img {
+    width: 5vw;
+    max-width: 30px;
+    margin-left: 2vw;
+}
+
+/* BIAŁY PROSTOKĄT */
+.find_your_workout-container {
+    background-color: white;
+    border-radius: 25px;
+    padding: 4vh 4vw;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90vw;
+    max-width: 1000px;
+    text-align: center;
+    margin-top: 5vh;
+}
+
+h3 {
+    font-size: 2rem;
+    color: #4b3b4f;
+    margin-bottom: 4vh;
+    font-family: 'Georgia', serif;
+}
+
+/* Przyciski */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #7e656b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Siatka przycisków */
+.exercise-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2vw;
+    margin-top: 4vh;
+}
+
+.exercise-button {
+    background-color: #7e656b;
+    color: white;
+    padding: 2vh 1vw;
+    border-radius: 40px;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.exercise-button:hover {
+    transform: scale(1.05);
+}
+
+/* 📱 RESPONSYWNOŚĆ */
+@media screen and (max-width: 1000px) {
+
+    .logo_chat {
+        display: none; /* ukryj logo */
+    }
+
+    .navigation_bar {
+        justify-content: center;
+    }
+
+    .icons {
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .icons img {
+        margin-left: 0;
+        width: 8vw;
+    }
+
+    .find_your_workout-container {
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        margin-top: 0;
+        padding: 5vh 5vw;
+    }
+
+    .exercise-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4vw;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+}

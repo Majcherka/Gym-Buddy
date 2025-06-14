@@ -1,0 +1,146 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e0dede;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* BIAŁY PROSTOKĄT */
+.signup-wrapper {
+    background-color: #fafafa;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.sing_up {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-sing-up img {
+    width: 35vw;
+    max-width: 150px;
+    margin-bottom: 4vh;
+}
+
+h2 {
+    font-size: clamp(18px, 5vw, 40px);
+    font-weight: bold;
+    color: #2b1d2f;
+    margin-bottom: 4vh;
+    font-family: 'Georgia', serif;
+}
+
+p {
+    font-size: clamp(12px, 4vw, 18px);
+    font-weight: bold;
+    color: #2b1d2f;
+    margin-bottom: 1vh;
+    font-family: 'Georgia', serif;
+}
+
+.signup-form {
+    width: 100%;
+}
+
+.signup-form input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    font-size: 1rem;
+}
+
+.buttons-sign-up {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.buttons-sign-up button {
+    width: 60%;
+    padding: 14px;
+    background-color: #7e656b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#cancel {
+    background-color: rgba(126, 101, 107, 0.18);
+}
+
+.links {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.links a {
+    display: block;
+    color: #666;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+/* 📱 RESPONSYWNOŚĆ — cały ekran na telefonie */
+@media screen and (max-width: 1000px) {
+    .signup-wrapper {
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        padding: 40px 20px;
+        box-shadow: none;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sing_up {
+        width: 100%;
+    }
+
+    .logo-sing-up img {
+        width: 50vw;
+        max-width: 120px;
+    }
+
+    .buttons-sign-up {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .buttons-sign-up button {
+        width: 100%;
+    }
+
+    .signup-form input {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    h2 {
+        font-size: clamp(18px, 8vw, 32px);
+    }
+}

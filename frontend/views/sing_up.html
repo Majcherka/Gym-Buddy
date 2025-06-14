@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="styles_sing_up.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script defer>
+        window.onload = function () {
+            document.getElementById("register-btn").addEventListener("click", async (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+                const dob = new Date(document.getElementById("date").value);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+
+                if (isNaN(age) || age < 18) {
+                    alert("You must be at least 18 years old to register.");
+                    return;
+                }
+
+                const res = await fetch("http://localhost:8080/api/users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password, age })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    const userId = data.user_id;
+                    localStorage.setItem("user_id", userId); // zapisz w localStorage
+
+                    window.location.href = data.redirect; // przekieruj na ekran wyboru preferencji
+                } else {
+                    alert("Błąd: " + data.error);
+                }
+
+            });
+        };
+    </script>
+</head>
+<body>
+<div class="signup-wrapper">
+<div class="sing_up">
+    <div class="logo-sing-up">
+        <img src="logo_gym.png" alt="Gym Buddy Logo" />
+    </div>
+    <h2>Sign up</h2>
+
+    <form class="signup-form" action="javascript:void(0);">
+        <p>Full Name</p>
+        <input type="text" id="name" placeholder="enter..." required />
+        <p>Email</p>
+        <input type="email" id="email" placeholder="email" required />
+        <p>Date of Birth</p>
+        <input type="date" id="date" required />
+        <p>Password</p>
+        <input type="password" id="password" placeholder="enter..." required>
+        <div class="buttons-sign-up">
+            <button type="submit" id="register-btn">Confirm</button>
+        </div>
+    </form>
+    <div class="links">
+        <a href="login.html">Already have an account? Log in?</a>
+    </div>
+</div>
+</div>
+</body>
+</html>

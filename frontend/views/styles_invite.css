@@ -1,0 +1,53 @@
+.invite-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+}
+
+.invite-container h2, h4 {
+    margin-bottom: 10px;
+}
+
+.invite-container button,
+.invite-container select,
+.invite-container textarea {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+#send-invite {
+    background: #64445c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#send-invite:hover {
+    background: #856179;
+}
+
+#invite-categories,
+#invite-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+#invite-categories button,
+#invite-days button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    cursor: default;
+    font-size: 14px;
+}

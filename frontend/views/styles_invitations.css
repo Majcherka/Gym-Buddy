@@ -1,0 +1,212 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e0dede;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* NAVIGATION BAR */
+.navigation_bar {
+    background-color: #FAFAFA;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2vh 5vw;
+    height: 10vh;
+    width: 100%;
+}
+
+.logo_chat {
+    display: block;
+}
+
+.navigation_bar img {
+    width: 8vw;
+    max-width: 60px;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.icons img {
+    width: 5vw;
+    max-width: 30px;
+    margin-left: 2vw;
+    cursor: pointer;
+}
+
+/* CONTAINER */
+.invitations-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 90vw;
+    max-width: 1200px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 4vh;
+}
+
+.sidebar {
+    flex: 1 1 100%;
+    background-color: #f3f3f3;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    transition: background-color 0.2s;
+}
+
+.sidebar li:hover {
+    background-color: #e8e8e8;
+}
+
+.invitation-details {
+    flex: 2 1 100%;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* BUTTONS */
+.buttons {
+    margin-top: 3vh;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.accept-btn,
+.reject-btn {
+    padding: 0.6rem 1.4rem;
+    border: none;
+    border-radius: 25px;
+    background-color: darkgrey;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    width: 20vh;
+    margin: 0 auto;
+}
+
+.accept-btn:hover {
+    background-color: #4caf50;
+}
+
+.reject-btn:hover {
+    background-color: #f44336;
+}
+
+/* TABS */
+.invitation-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #7e656b;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tab-btn:hover,
+.tab-btn.active {
+    background-color: #5a3a40;
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 1000px) {
+
+    .navigation_bar {
+        justify-content: center;
+        padding: 2vh 4vw;
+    }
+
+    .icons {
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .icons img {
+        margin-left: 0;
+        width: 8vw;
+    }
+
+    .invitations-container {
+        width: 100vw;
+        border-radius: 0;
+        box-shadow: none;
+        flex-direction: column;
+        margin: 0;
+    }
+
+    .sidebar,
+    .invitation-details {
+        flex: 1 1 100%;
+        padding: 15px;
+        border: none;
+    }
+
+    .buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .accept-btn,
+    .reject-btn {
+        width: 80%;
+    }
+
+    .tab-btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .icons img {
+        width: 10vw;
+    }
+
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+
+}

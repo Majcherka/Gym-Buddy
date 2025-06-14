@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Your Workout</title>
+    <link rel="stylesheet" href="styles_find_your_workout.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <nav class="navigation_bar">
+        <div class="logo_find_your_workout">
+            <img src="logo_gym.png" alt="Gym Buddy Logo" />
+        </div>
+        <div class="icons">
+            <a href="match.html">
+                <img src="favorite.svg" alt="favorite" class="icon" />
+            </a>            <img src="home.svg" alt="home"/>
+            <a href="invitations.html">
+                <img src="invitation.svg" alt="invitation"/>
+            </a>
+            <a href="profile.html">
+                <img src="profile.svg" alt="profile"/>
+            </a>
+        </div>
+    </nav>
+    <div class="find_your_workout-container">
+        <h3>Find Your Workout</h3>
+        <div class="exercise-buttons">
+            <div class="exercise-button"><button>Outdoor Exercise</button></div>
+            <div class="exercise-button"><button>Cardio Exercise</button></div>
+            <div class="exercise-button"><button>Strength Training</button></div>
+            <div class="exercise-button"><button>Flexibility + Mobility</button></div>
+            <div class="exercise-button"><button>Yoga & Pilates</button></div>
+            <div class="exercise-button"><button>Senior workouts</button></div>
+            <div class="exercise-button"><button>Aqua Fitness</button></div>
+            <div class="exercise-button"><button>Rehabilitation & Recovery</button></div>
+        </div>
+    </div>
+    <script>
+        // tutaj
+        async function getRandomUser(category) {
+            const response = await fetch(`http://localhost:8080/api/users/random?category=${encodeURIComponent(category)}`);
+            const result = await response.json();
+
+            console.log(result);
+
+            if (result.success) {
+                const user = result.user;
+                // Zapisz dane do localStorage lub sessionStorage
+                sessionStorage.setItem('matchedUser', JSON.stringify(user));
+                // Przejdź do match.html
+                window.location.href = 'match.html?category=' + category;
+            } else {
+                alert('No user found for this category.');
+            }
+        }
+
+
+        // koniec
+        document.querySelectorAll('.exercise-button button').forEach(button => {
+            button.addEventListener('click', async () => {
+                const category = button.innerText.trim();
+
+                await getRandomUser(category);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gym Buddy Login</title>
+    <link rel="stylesheet" href="styles_login.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="login">
+    <div class="logo">
+        <img src="logo_gym.png" alt="Gym Buddy Logo" />
+    </div>
+
+    <h1>Gym Buddy</h1>
+
+    <div class="role-switch">
+        <button class="role-btn active" id="user-mode">User</button>
+        <button class="role-btn" id="admin-mode">Admin</button>
+    </div>
+
+    <form id="login-form">
+        <input type="email" id="email" placeholder="E-mail address" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit" id="submit-button">Log in</button>
+    </form>
+
+    <div class="links">
+        <a href="sing_up.html">Don't have a Gym Buddy account?</a>
+    </div>
+</div>
+
+<script>
+    let isAdmin = false;
+
+    const userBtn = document.getElementById('user-mode');
+    const adminBtn = document.getElementById('admin-mode');
+    const submitBtn = document.getElementById('submit-button');
+
+    userBtn.addEventListener('click', () => {
+        isAdmin = false;
+        userBtn.classList.add('active');
+        adminBtn.classList.remove('active');
+        submitBtn.textContent = 'Log in';
+    });
+
+    adminBtn.addEventListener('click', () => {
+        isAdmin = true;
+        adminBtn.classList.add('active');
+        userBtn.classList.remove('active');
+        submitBtn.textContent = 'Log in as Admin';
+    });
+
+    document.querySelector('#login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+
+        const response = await fetch('http://localhost:8080/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            if (isAdmin && result.role !== 'admin') {
+                alert('Access denied: You are not an admin');
+                return;
+            }
+
+            localStorage.setItem('user_id', result.user_id);
+            localStorage.setItem('role', result.role); // ⬅ dodaj to
+
+            alert('Logged in!');
+
+            window.location.href = isAdmin ? 'admin_dashboard.html' : 'profile.html';
+        } else {
+            alert(result.error || 'Login failed');
+        }
+    });
+</script>
+</body>
+</html>

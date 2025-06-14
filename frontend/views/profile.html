@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="styles_profile.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Styl dla podświetlenia dostępnych dni */
+    .availability .selected button {
+      background-color: #5a3a40;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<nav class="navigation_bar">
+  <div class="logo_chat">
+    <img src="logo_gym.png" alt="Gym Buddy Logo" />
+  </div>
+  <div class="icons">
+    <a href="match.html">
+      <img src="favorite.svg" alt="favorite" class="icon" />
+    </a>
+    <a href="find_your_workout.html">
+      <img src="home.svg" alt="home" />
+    </a>
+    <a href="invitations.html">
+      <img src="invitation.svg" alt="invitation" />
+    </a>
+    <a href="profile.html">
+      <img src="profile.svg" alt="profile" />
+    </a>
+  </div>
+</nav>
+
+<div class="profile_container">
+  <div class="profile-header">
+    <img class="profile-img" src="profile.webp" alt="Profile Picture">
+    <p class="name"><span class="user-name">Name</span> <span class="age">21</span></p>
+    <div class="opis">
+      <p class="description-text">Loading description...</p>
+    </div>
+  </div>
+
+  <div class="traning_categories_container">
+    <h4>Training categories</h4>
+    <div class="traning_categories">
+      <div class="category_1"><button>Loading...</button></div>
+      <div class="category_2"><button>Loading...</button></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h4>Availability</h4>
+    <div class="availability">
+      <div class="Monday"><button>MON</button></div>
+      <div class="Tuesday"><button>TUE</button></div>
+      <div class="Wednesday"><button>WED</button></div>
+      <div class="Thursday"><button>THU</button></div>
+      <div class="Friday"><button>FRI</button></div>
+      <div class="Saturday"><button>SAT</button></div>
+      <div class="Sunday"><button>SUN</button></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h4>Location:</h4>
+    <div class="location">
+      <div class="Location_button"><button>Loading...</button></div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <a href="edit_profile.html"><button>Edit profile</button></a>
+    <button id="logout-button">Log out</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) {
+      alert("User not logged in!");
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/users/profile?user_id=${userId}`);
+      const data = await response.json();
+
+      if (data.error) {
+        alert("Failed to load profile: " + data.error);
+        return;
+      }
+
+      // 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽 Ustaw imię i wiek
+      document.querySelector(".user-name").innerText = data.name || "Unknown";
+      document.querySelector(".age").innerText = data.age || "";
+      // Ustaw opis
+      document.querySelector(".description-text").innerText = data.description || "No description provided";
+
+      // Ustaw kategorie
+      const catButtons = document.querySelectorAll(".traning_categories button");
+      data.categories.forEach((cat, i) => {
+        if (catButtons[i]) catButtons[i].innerText = cat;
+      });
+
+      // Podświetl dni
+      data.days.forEach(day => {
+        const dayDiv = document.querySelector(`.availability .${day}`);
+        if (dayDiv) dayDiv.classList.add("selected");
+      });
+
+      // Ustaw lokalizację
+      document.querySelector(".location .Location_button button").innerText = data.city || "Unknown";
+
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong loading your profile.");
+    }
+  });
+
+  document.getElementById("logout-button").addEventListener("click", async () => {
+    try {
+      // Wylogowanie po stronie serwera (usunięcie sesji)
+      await fetch('http://localhost:8080/api/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      // Wyczyść dane lokalne
+      localStorage.removeItem("user_id");
+
+      // Przekieruj do logowania
+      window.location.href = "login.html";
+    } catch (e) {
+      alert("Błąd podczas wylogowywania");
+      console.error(e);
+    }
+  });
+</script>
+
+</body>
+</html>
+
+

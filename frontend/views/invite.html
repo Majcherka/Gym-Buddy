@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Invitation</title>
+    <link rel="stylesheet" href="styles_invite.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<main class="invite-container">
+    <h2 id="invite-name">Name</h2>
+    <p id="invite-age">Age</p>
+
+    <h4>Training categories:</h4>
+    <div id="invite-categories"></div>
+
+    <h4>Availability:</h4>
+    <div id="invite-days"></div>
+
+    <h4>Select Gym Location:</h4>
+    <select id="invite-location">
+        <option value="">Loading gyms...</option>
+    </select>
+
+    <h4>Message:</h4>
+    <textarea id="invite-message" rows="4" placeholder="Write your message..."></textarea>
+
+    <button id="send-invite">SEND</button>
+</main>
+
+<script>
+    const user = JSON.parse(sessionStorage.getItem('matchedUser'));
+    const loggedInUserId = localStorage.getItem('user_id');
+    const category = new URLSearchParams(window.location.search).get('category') || user?.categories?.split(',')[0];
+
+    if (!user) {
+        document.body.innerHTML = '<p>No user selected</p>';
+        throw new Error('No user data');
+    }
+
+    // Wyświetl dane użytkownika
+    document.getElementById('invite-name').textContent = user.name;
+    document.getElementById('invite-age').textContent = user.age;
+
+    user.categories?.split(',').forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        document.getElementById('invite-categories').appendChild(btn);
+    });
+
+    (user.availability || "").split(',').forEach(day => {
+        const btn = document.createElement('button');
+        btn.textContent = day.trim();
+        document.getElementById('invite-days').appendChild(btn);
+    });
+
+    // Wczytaj siłownie
+    async function loadGyms() {
+        const res = await fetch('http://localhost:8080/api/gyms');
+        const gyms = await res.json();
+        const select = document.getElementById('invite-location');
+        select.innerHTML = '';
+        gyms.forEach(gym => {
+            const opt = document.createElement('option');
+            opt.value = gym.id;
+            opt.textContent = `${gym.name} (${gym.city})`;
+            select.appendChild(opt);
+        });
+    }
+    loadGyms();
+
+    // Wysyłanie zaproszenia
+    document.getElementById('send-invite').addEventListener('click', async () => {
+        const gymId = document.getElementById('invite-location').value;
+        const message = document.getElementById('invite-message').value;
+
+        if (!gymId || !message) {
+            return alert('Please select a location and write a message');
+        }
+        if (message.length < 1 || message.length > 200) {
+            alert('Your message must be between 1 and 200 characters.');
+            return;
+        }
+        // 1. Zapisz zaproszenie jako "like"
+        await fetch('http://localhost:8080/api/match', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: loggedInUserId,
+                target_id: user.id,
+                action: 'like'
+            })
+        });
+
+        // 2. Pobierz nowego użytkownika z tej samej kategorii
+        //const res = await fetch(`http://localhost:8080/api//get_random_user_by_category.php?category=${encodeURIComponent(category)}`);
+        //const result = await res.json();
+
+        const response = await fetch('http://localhost:8080/api/invitations/send', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                sender_id: loggedInUserId,
+                receiver_id: user.id,
+                gym_id: gymId,
+                message: message
+            })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            alert('Failed to send invitation: ' + (result.error || 'Unknown error'));
+            return;
+        }
+        //if (result.success) {
+        //    sessionStorage.setItem('matchedUser', JSON.stringify(result.user));
+        //}
+        if (result.success) {
+            // Pobierz nowego użytkownika z tej samej kategorii
+            console.log(category)
+            const res = await fetch(`http://localhost:8080/api/users/random?category=${encodeURIComponent(category)}`);
+            const newUserResult = await res.json();
+
+            if (newUserResult.success) {
+                sessionStorage.setItem('matchedUser', JSON.stringify(newUserResult.user));
+            } else {
+                alert("Nie znaleziono nowego użytkownika.");
+            }
+
+            // Przekieruj do match.html
+            window.location.href = 'match.html?category=' + encodeURIComponent(category);
+        }
+        // 3. Przekieruj z powrotem do match.html z tą samą kategorią
+        // window.location.href = 'match.html?category=' + encodeURIComponent(category);
+    });
+</script>
+</body>
+</html>

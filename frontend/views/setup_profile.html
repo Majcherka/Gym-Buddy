@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Set Your Preferences</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section h3 {
+      margin-bottom: 10px;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 20px;
+      text-align: center;
+      border-radius: 25px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Różne odcienie dla sekcji */
+    #exercise-container .btn {
+      background-color: #5a3a40;
+    }
+    #exercise-container .btn.selected {
+      background-color: lightblue;
+    }
+
+    #days-container .btn {
+      background-color: #8a6b74;
+    }
+    #days-container .btn.selected {
+      background-color: lightpink;
+    }
+
+    #city-container .btn {
+      background-color: #b4969e;
+    }
+    #city-container .btn.selected {
+      background-color: lightseagreen;
+    }
+
+    /* Przycisk Save */
+    #save-btn {
+      display: block;
+      margin: 30px auto 0;
+      padding: 14px 32px;
+      background-color: #5a3a40;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    #save-btn:hover {
+      background-color: #3c252a;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+<h2>Complete Your Profile</h2>
+
+<div class="section">
+  <h3>Select 2 Exercise Categories</h3>
+  <div id="exercise-container" class="btn-grid">
+    <button class="btn" data-value="Outdoor Exercise">Outdoor Exercise</button>
+    <button class="btn" data-value="Cardio Exercise">Cardio Exercise</button>
+    <button class="btn" data-value="Strength Training">Strength Training</button>
+    <button class="btn" data-value="Flexibility + Mobility">Flexibility + Mobility</button>
+    <button class="btn" data-value="Yoga & Pilates">Yoga & Pilates</button>
+    <button class="btn" data-value="Senior Workouts">Senior Workouts</button>
+    <button class="btn" data-value="Aqua Fitness">Aqua Fitness</button>
+    <button class="btn" data-value="Rehabilitation & Recovery">Rehabilitation & Recovery</button>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Select Available Days (1–7)</h3>
+  <div id="days-container" class="btn-grid">
+    <button class="btn" data-value="Monday">Monday</button>
+    <button class="btn" data-value="Tuesday">Tuesday</button>
+    <button class="btn" data-value="Wednesday">Wednesday</button>
+    <button class="btn" data-value="Thursday">Thursday</button>
+    <button class="btn" data-value="Friday">Friday</button>
+    <button class="btn" data-value="Saturday">Saturday</button>
+    <button class="btn" data-value="Sunday">Sunday</button>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Select Your Location</h3>
+  <div id="city-container" class="btn-grid">
+    <button class="btn" data-value="Warsaw">Warsaw</button>
+    <button class="btn" data-value="Cracow">Cracow</button>
+    <button class="btn" data-value="Łódź">Łódź</button>
+    <button class="btn" data-value="Wrocław">Wrocław</button>
+    <button class="btn" data-value="Olsztyn">Olsztyn</button>
+    <button class="btn" data-value="Gdańsk">Gdańsk</button>
+    <button class="btn" data-value="Szczecin">Szczecin</button>
+  </div>
+</div>
+<div class="section">
+  <h3>Your Description (1–200 characters)</h3>
+  <textarea id="description" maxlength="200" rows="4" style="width: 100%; border-radius: 10px; padding: 10px;" placeholder="Tell others about yourself..."></textarea>
+</div>
+
+<button id="save-btn">Save</button>
+
+<script>
+  let selectedExercises = [];
+  let selectedDays = [];
+  let selectedCity = null;
+
+  document.querySelectorAll('#exercise-container .btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.value;
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        selectedExercises = selectedExercises.filter(v => v !== val);
+      } else {
+        if (selectedExercises.length < 2) {
+          btn.classList.add('selected');
+          selectedExercises.push(val);
+        } else {
+          alert("You can select only 2 exercise categories.");
+        }
+      }
+    });
+  });
+
+  document.querySelectorAll('#days-container .btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.value;
+      btn.classList.toggle('selected');
+      if (selectedDays.includes(val)) {
+        selectedDays = selectedDays.filter(v => v !== val);
+      } else {
+        selectedDays.push(val);
+      }
+    });
+  });
+
+  document.querySelectorAll('#city-container .btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedCity = btn.dataset.value;
+      document.querySelectorAll('#city-container .btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    if (selectedExercises.length !== 2 || selectedDays.length < 1 || !selectedCity) {
+      alert("Please complete all fields before saving.");
+      return;
+    }
+    const userId = localStorage.getItem('user_id');
+    const description = document.getElementById('description').value.trim();
+    if (description.length < 1 || description.length > 200) {
+      alert("Description must be between 1 and 200 characters.");
+      return;
+    }
+
+    console.log("Sending to save_profile.php", {
+      user_id: userId,
+      exercise1: selectedExercises[0],
+      exercise2: selectedExercises[1],
+      days: selectedDays,
+      city: selectedCity
+    });
+
+    const response = await fetch('http://localhost:8080/api/users/preferences', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: userId,
+        categories: selectedExercises,
+        days: selectedDays,
+        city: selectedCity,
+        description: description
+      })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      alert("Preferences saved successfully!");
+      window.location.href = "profile.html"; // or your actual destination
+    } else {
+      alert("Error saving preferences: " + data.error);
+    }
+  });
+</script>
+
+</body>
+</html>

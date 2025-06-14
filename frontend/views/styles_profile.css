@@ -1,0 +1,231 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e0dede;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* NAVIGATION BAR */
+.navigation_bar {
+    background-color: #FAFAFA;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2vh 5vw;
+    height: 10vh;
+    width: 100%;
+}
+
+.logo_chat {
+    display: block;
+}
+
+.navigation_bar img {
+    width: 8vw;
+    max-width: 60px;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.icons img {
+    width: 5vw;
+    max-width: 30px;
+    margin-left: 2vw;
+    cursor: pointer;
+}
+
+/* === Kontener Profilu === */
+.profile_container {
+    margin-top: 12vh;
+    background-color: white;
+    border-radius: 25px;
+    padding: 4vh 4vw;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90vw;
+    max-width: 1000px;
+    text-align: center;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3vh;
+}
+
+.profile-img {
+    height: 30vh;
+    width: auto;
+    max-width: 80vw;
+    object-fit: cover;
+    margin-bottom: 1vh;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.profile-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #4b3b4f;
+}
+
+.age {
+    font-weight: normal;
+    color: #777;
+}
+
+.opis {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    margin: 2vh auto;
+    border-radius: 20px;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    color: #444;
+}
+
+/* === Kategorie / Dostępność / Lokalizacja === */
+.traning_categories,
+.availability,
+.location {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1vh;
+}
+
+.traning_categories button,
+.availability button,
+.location button {
+    padding: 10px 18px;
+    min-width: 90px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid #ccc;
+    cursor: default;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.traning_categories button {
+    background-color: #7e656b;
+    color: white;
+    border: none;
+}
+
+.availability button {
+    background-color: #a88c94;
+    color: white;
+}
+
+.location button {
+    background-color: #d4c2c7;
+    color: white;
+}
+
+.traning_categories button:hover,
+.availability button:hover,
+.location button:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+}
+
+/* === Dodatkowe przyciski === */
+.buttons {
+    margin-top: 3vh;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.buttons button {
+    width: 20vh;
+    padding: 0.6rem 1.4rem;
+    border: none;
+    border-radius: 25px;
+    background-color: darkgrey;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    margin: 0 auto;
+}
+
+.buttons button:hover {
+    background-color: #a594ab;
+    transform: scale(1.05);
+}
+
+/* === 📱 RESPONSYWNOŚĆ === */
+@media screen and (max-width: 1000px) {
+
+    body{
+        background-color: #f8f8f8;
+    }
+
+    .navigation_bar {
+        justify-content: center;
+        padding: 2vh 4vw;
+    }
+
+    .icons {
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .icons img {
+        margin-left: 0;
+        width: 8vw;
+    }
+
+    .icons img:hover {
+        transform: scale(1.1);
+    }
+
+    .profile_container {
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        margin-top: 2vh;
+        padding: 5vh 5vw;
+    }
+
+    .profile-img {
+        max-width: 90vw;
+        height: auto;
+    }
+
+    .opis {
+        max-width: 90%;
+        font-size: 1rem;
+    }
+
+    .traning_categories button,
+    .availability button,
+    .location button {
+        font-size: 0.85rem;
+        min-width: 80px;
+        padding: 8px 12px;
+    }
+
+    .buttons button {
+        width: 100%;
+        font-size: 1rem;
+    }
+}

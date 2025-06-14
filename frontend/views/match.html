@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Match</title>
+    <link rel="stylesheet" href="styles_match.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<nav class="navigation_bar">
+    <div class="logo_chat">
+        <img src="logo_gym.png" alt="Gym Buddy Logo" class="logo" />
+    </div>
+    <div class="icons">
+        <img src="favorite.svg" alt="favorite" class="icon" />
+        <a href="find_your_workout.html">
+            <img src="home.svg" alt="home" class="icon" />
+        </a>
+        <a href="invitations.html">
+            <img src="invitation.svg" alt="invitations"/>
+        </a>        <a href="profile.html">
+        <img src="profile.svg" alt="profile" class="icon" />
+    </a>
+    </div>
+</nav>
+<main class="profile-card">
+    <h2><strong id="matched-name">Imię</strong> <span class="age" id="matched-age">Wiek</span></h2>
+
+    <div class="profile-photo">
+        <img src="profile.webp" alt="Profile Photo" />
+    </div>
+
+    <div class="profile-description">
+        <p id="matched-description">Opis użytkownika...</p>
+    </div>
+    <div class="training-categories-section">
+        <h4>Training categories:</h4>
+        <div class="match-categories" id="matched-categories">
+        </div>
+    </div>
+    <div class="availability-section">
+        <h4>Availability:</h4>
+        <div class="match-availability" id="matched-availability">
+            <!-- Przyciski będą wstawione przez JS -->
+        </div>
+    </div>
+    <div class="location-section">
+        <h4>Location:</h4>
+        <div class="match-location" id="matched-location">
+            <!-- Miasto będzie wstawione przez JS -->
+        </div>
+    </div>
+    <div class="buttons">
+        <button class="accept">😊</button>
+        <button class="reject">✖</button>
+    </div>
+</main>
+<script>
+    const userData = JSON.parse(sessionStorage.getItem('matchedUser'));
+    const currentUrl = new URL(window.location.href);
+    const category = currentUrl.searchParams.get("category");
+
+    if (!category) {
+        alert("Nie wybrano kategorii");
+    }
+
+    if (userData) {
+        document.getElementById('matched-name').textContent = userData.name;
+        if (userData.age) document.getElementById('matched-age').textContent = userData.age;
+        if (userData.description) document.getElementById('matched-description').textContent = userData.description;
+
+        const categoriesContainer = document.getElementById('matched-categories');
+        console.log(userData)
+        if (userData.categories && Array.isArray(userData.categories.split(','))) {
+            userData.categories.split(',').forEach(category => {
+                const btn = document.createElement('button');
+                btn.textContent = category;
+                categoriesContainer.appendChild(btn);
+            });
+        }
+
+        const availabilityContainer = document.getElementById('matched-availability');
+        if (userData.availability) {
+            const days = Array.isArray(userData.availability)
+                ? userData.availability
+                : userData.availability.split(',');
+
+            days.forEach(day => {
+                const btn = document.createElement('button');
+                btn.textContent = day.trim();
+                availabilityContainer.appendChild(btn);
+            });
+        }
+        console.log(userData);
+        const locationContainer = document.getElementById('matched-location');
+        if (userData.locations) {
+            const btn = document.createElement('button');
+            btn.textContent = userData.locations;
+            locationContainer.appendChild(btn);
+        }
+
+
+
+    } else {
+        document.body.innerHTML = '<p>No user data found</p>';
+    }
+    //dodane teraz
+    const loggedInUserId = localStorage.getItem('user_id'); // CHOMIK
+    const targetUserId = userData.id; // MICHAŁ
+
+    async function getRandomUser() {
+        const response = await fetch(`http://localhost:8080/api/users/random?category=${encodeURIComponent(category)}&user_id=${encodeURIComponent(loggedInUserId)}`);
+        const result = await response.json();
+
+        console.log(result);
+
+        if (result.success) {
+            const user = result.user;
+            // Zapisz dane do localStorage lub sessionStorage
+            sessionStorage.setItem('matchedUser', JSON.stringify(user));
+            // Przejdź do match.html
+            window.location.reload();
+        } else {
+            alert('No user found for this category.');
+        }
+    }
+
+    document.querySelector('.accept').addEventListener('click', async () => {
+        // Zapisz usera do zaproszenia i przejdź do invite.html
+        window.location.href = 'invite.html';
+    });
+
+
+    document.querySelector('.reject').addEventListener('click', async () => {
+        await fetch('http://localhost:8080/api/match', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: loggedInUserId,
+                target_id: targetUserId,
+                action: 'dislike'
+            })
+        });
+
+        alert(`You rejected ${userData.name}`);
+        await getRandomUser();
+    });
+
+</script>
+
+
+
+</body>
+</html>

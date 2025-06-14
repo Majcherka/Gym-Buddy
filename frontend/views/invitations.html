@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invitations</title>
+    <link rel="stylesheet" href="styles_invitations.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<nav class="navigation_bar">
+    <div class="logo_chat">
+        <img src="logo_gym.png" alt="Gym Buddy Logo" />
+    </div>
+    <div class="icons">
+        <a href="match.html">
+            <img src="favorite.svg" alt="favorite" class="icon" />
+        </a>
+        <a href="find_your_workout.html">
+            <img src="home.svg" alt="home" />
+        </a>
+        <a href="invitations.html">
+            <img src="invitation.svg" alt="invitation" />
+        </a>
+        <a href="profile.html">
+            <img src="profile.svg" alt="profile" />
+        </a>
+    </div>
+</nav>
+<div class="invitation-tabs">
+    <button id="incoming-tab" class="tab-btn">Incoming</button>
+    <button id="accepted-tab" class="tab-btn">Accepted</button>
+    <button id="sent-accepted-tab" class="tab-btn">Send by me and accepted</button>
+
+</div>
+<main class="invitations-container">
+    <div class="sidebar">
+
+
+
+        <ul id="invitation-list"></ul>
+
+    </div>
+
+    <div class="invitation-details" id="invitation-details">
+        <p>Select an invitation to view details</p>
+    </div>
+</main>
+
+<script>
+    const userId = localStorage.getItem('user_id');
+    const list = document.getElementById('invitation-list');
+    const details = document.getElementById('invitation-details');
+
+    async function fetchInvitations(status = 'pending') {
+        const res = await fetch(`http://localhost:8080/api/invitations/received?user_id=${userId}&status=${status}`);
+        const text = await res.text(); // zamiast res.json()
+        console.log("ODPOWIEDŹ PHP:", text); // pokaże co PHP zwraca
+        try {
+            const data = JSON.parse(text); // próbujemy sparsować
+            list.innerHTML = '';
+            details.innerHTML = '<p>Select an invitation to view details</p>';
+
+            data.forEach(inv => {
+                const li = document.createElement('li');
+                li.textContent = `${inv.sender_name}, age ${inv.sender_age}`;
+                li.addEventListener('click', () => showInvitationDetails(inv, status));
+                list.appendChild(li);
+            });
+        } catch (e) {
+            console.error("Błąd parsowania JSON:", e);
+        }
+    }
+
+    function showInvitationDetails(inv, status) {
+        let html = `
+      <h3>Message from ${inv.sender_name}</h3>
+      <p><strong>Age:</strong> ${inv.sender_age}</p>
+      <p><strong>Categories:</strong> ${inv.categories.join(', ')}</p>
+      <p><strong>Availability:</strong> ${inv.days.join(', ')}</p>
+      <p><strong>Selected gym:</strong> ${inv.gym}</p>
+      <p><strong>Message:</strong><br>${inv.message}</p>
+    `;
+
+        if (status === 'pending') {
+            html += `
+        <div class="buttons">
+          <button class="accept-btn" onclick="respond(${inv.invitation_id}, 'accepted')">Accept</button>
+          <button class="reject-btn" onclick="respond(${inv.invitation_id}, 'rejected')">Reject</button>
+        </div>
+      `;
+        }
+
+        details.innerHTML = html;
+    }
+
+    async function respond(invitationId, action) {
+        await fetch('http://localhost:8080/api/invitations/respond', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ invitation_id: invitationId, status: action })
+        });
+        fetchInvitations('pending');
+    }
+
+    // Tab listeners
+    document.getElementById('incoming-tab').addEventListener('click', () => fetchInvitations('pending'));
+   document.getElementById('accepted-tab').addEventListener('click', () => fetchInvitations('accepted'));
+    document.getElementById('sent-accepted-tab').addEventListener('click', async () => {
+        const res = await fetch(`http://localhost:8080/api/invitations/sent-accepted?user_id=${userId}`);
+        const text = await res.text();
+        console.log("ODPOWIEDŹ PHP (sent-accepted):", text);
+
+        try {
+            const data = JSON.parse(text);
+            list.innerHTML = '';
+            details.innerHTML = '<p>Select an invitation to view details</p>';
+
+            data.forEach(inv => {
+                const li = document.createElement('li');
+                li.textContent = `${inv.receiver_name}, age ${inv.receiver_age}`;
+                li.addEventListener('click', () => showInvitationDetailsSent(inv));
+                list.appendChild(li);
+            });
+        } catch (e) {
+            console.error("Błąd parsowania JSON:", e);
+        }
+    });
+
+    function showInvitationDetailsSent(inv) {
+        let html = `
+      <h3>You sent invitation to ${inv.receiver_name}</h3>
+      <p><strong>Age:</strong> ${inv.receiver_age}</p>
+      <p><strong>Categories:</strong> ${inv.categories.join(', ')}</p>
+      <p><strong>Availability:</strong> ${inv.days.join(', ')}</p>
+      <p><strong>Selected gym:</strong> ${inv.gym}</p>
+      <p><strong>Message:</strong><br>${inv.message}</p>
+    `;
+        details.innerHTML = html;
+    }
+
+    // Initial fetch
+    fetchInvitations('pending');
+</script>
+
+</body>
+</html>
